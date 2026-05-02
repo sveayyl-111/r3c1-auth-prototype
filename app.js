@@ -313,6 +313,7 @@
     iframe_mode:  urlParams.get("mode") === "iframe" || (window.self !== window.top)
   };
   if (ctx.iframe_mode) document.documentElement.classList.add("in-iframe");
+  const _s = ctx.iframe_mode; // short-text flag
   // Validate cell + cue fall back gracefully
   if (!VIGNETTE[ctx.cell]) ctx.cell = "self";
   if (!CUE_TEXT[ctx.cue])  ctx.cue  = "low";
@@ -495,6 +496,7 @@
   function bottomAction(html) {
     return `<div class="bottom-action">${html}</div>`;
   }
+  const _backW = _s ? '60px' : '100px';
 
   // ----- Page 0: Welcome A — "What is this" -----
   function renderWelcomeA() {
@@ -508,13 +510,13 @@
         </div>
 
         <div class="context-frame" role="region" aria-label="情景说明">
-          <div class="cf-row"><span class="cf-key">这是什么</span><span class="cf-val">AI 购物助手是一种<strong>您一次授权、长期为您自动采购</strong>的代理。开通后，它会按您设定的范围在多个购物平台搜索、比价、下单、自动补货——<strong>不需要您每一步都亲自确认</strong>。</span></div>
-          <div class="cf-row"><span class="cf-key">您要做什么</span><span class="cf-val">接下来的设置决定 AI 助手能为您做什么、不能做什么。共 <strong>8 项授权</strong>权限。</span></div>
-          <div class="cf-row"><span class="cf-key">您始终可控</span><span class="cf-val">所有授权可在「我的 → AI 助手」中<strong>即时撤销或调整</strong>。</span></div>
+          <div class="cf-row"><span class="cf-key">这是什么</span><span class="cf-val">${_s ? '一次授权，<strong>长期自动采购</strong>的 AI 代理。' : 'AI 购物助手是一种<strong>您一次授权、长期为您自动采购</strong>的代理。开通后，它会按您设定的范围在多个购物平台搜索、比价、下单、自动补货——<strong>不需要您每一步都亲自确认</strong>。'}</span></div>
+          <div class="cf-row"><span class="cf-key">您要做什么</span><span class="cf-val">${_s ? '设置 <strong>8 项授权</strong>权限。' : '接下来的设置决定 AI 助手能为您做什么、不能做什么。共 <strong>8 项授权</strong>权限。'}</span></div>
+          <div class="cf-row"><span class="cf-key">您始终可控</span><span class="cf-val">所有授权可<strong>即时撤销或调整</strong>。</span></div>
         </div>
       </div>
 
-      ${bottomAction(`<button class="btn btn-primary btn-block" id="btn-next">下一步：为谁购物 →</button>`)}
+      ${bottomAction(`<button class="btn btn-primary btn-block" id="btn-next">${_s ? '下一步 →' : '下一步：为谁购物 →'}</button>`)}
     `;
     $app.innerHTML = html;
     document.getElementById("btn-next").addEventListener("click", () => goTo(state.current_page_index + 1));
@@ -527,7 +529,7 @@
       <div class="page-content fade-in">
         <div class="step-label">引导 · 2 / 3</div>
         <h1>本次为谁购物</h1>
-        <p class="page-subtitle">本次开通是针对一个特定的购物对象。请阅读以下情景：</p>
+        <p class="page-subtitle">${_s ? '请阅读以下情景：' : '本次开通是针对一个特定的购物对象。请阅读以下情景：'}</p>
 
         <div class="vignette-card" role="region" aria-label="本次设置的场景">
           <div class="v-icon" aria-hidden="true">${v.icon}</div>
@@ -538,12 +540,12 @@
           </div>
         </div>
 
-        <p class="page-subtitle" style="margin-top:14px;font-size:13px;color:var(--fg-soft);">在做后面 8 项授权决策时，请始终以这个购物对象为准。屏幕顶部的横条会持续提醒。</p>
+        ${_s ? '' : '<p class="page-subtitle" style="margin-top:14px;font-size:13px;color:var(--fg-soft);">在做后面 8 项授权决策时，请始终以这个购物对象为准。屏幕顶部的横条会持续提醒。</p>'}
       </div>
 
       ${bottomAction(`
-        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 100px;">返回</button>
-        <button class="btn btn-primary" id="btn-next">下一步：商品与赔付政策 →</button>
+        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 ${_backW};">返回</button>
+        <button class="btn btn-primary" id="btn-next">${_s ? '下一步 →' : '下一步：商品与赔付政策 →'}</button>
       `)}
     `;
     $app.innerHTML = html;
@@ -559,7 +561,7 @@
         <h1>商品与赔付政策</h1>
 
         <div class="scenario-preview" role="region" aria-label="本月将为您准备的商品">
-          <div class="sp-label">本月将为您准备 · 8 类营养与食补品（下一步您将选 1 类作为本次 demo）</div>
+          <div class="sp-label">${_s ? '8 类营养与食补品（选 1 类体验）' : '本月将为您准备 · 8 类营养与食补品（下一步您将选 1 类作为本次 demo）'}</div>
           <div class="sp-row">
             ${CATEGORIES.map(c => {
               const p = productFor(c.id, ctx.cell);
@@ -579,11 +581,11 @@
           ${TRUST_SIGNALS.map(t => `<span class="trust-item"><span class="icon">${t.icon}</span>${escapeHtml(t.text)}</span>`).join("")}
         </div>
 
-        <p class="page-subtitle" style="margin-top:8px;">接下来 <strong>2 个简单设置</strong>（购物偏好 + 选 1 个类目）+ <strong>3 步授权</strong>（浏览 / 下单 / 长期管理）完成开通。</p>
+        <p class="page-subtitle" style="margin-top:8px;">${_s ? '<strong>2 个设置</strong> + <strong>3 步授权</strong>即可完成开通。' : '接下来 <strong>2 个简单设置</strong>（购物偏好 + 选 1 个类目）+ <strong>3 步授权</strong>（浏览 / 下单 / 长期管理）完成开通。'}</p>
       </div>
 
       ${bottomAction(`
-        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 100px;">返回</button>
+        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 ${_backW};">返回</button>
         <button class="btn btn-primary" id="btn-next">开始设置 →</button>
       `)}
     `;
@@ -611,11 +613,11 @@
       <div class="page-content fade-in">
         <div class="step-label">前置设置 · 1 / 2</div>
         <h1>您的购物偏好</h1>
-        <p class="page-subtitle">AI 助手在替您选品时会按这条规则筛选。请选 1 项；后续可在「我的 → AI 助手」中调整。</p>
+        <p class="page-subtitle">${_s ? '选 1 项，AI 按此规则筛选。' : 'AI 助手在替您选品时会按这条规则筛选。请选 1 项；后续可在「我的 → AI 助手」中调整。'}</p>
         <div class="pref-list">${cardsHtml}</div>
       </div>
       ${bottomAction(`
-        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 100px;">返回</button>
+        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 ${_backW};">返回</button>
         <button class="btn btn-primary" id="btn-next">下一步 →</button>
       `)}
     `;
@@ -666,11 +668,11 @@
       <div class="page-content fade-in">
         <div class="step-label">前置设置 · 2 / 2</div>
         <h1>本次 demo 选 1 类产品</h1>
-        <p class="page-subtitle">从下面 8 类营养/食补品中挑 1 类——后续 8 项授权将以您选的<strong>这一类</strong>为例演示 AI 助手如何工作。其它 7 类不在本次 demo 中展示。</p>
+        <p class="page-subtitle">${_s ? '选 1 类，后续授权以此为例。' : '从下面 8 类营养/食补品中挑 1 类——后续 8 项授权将以您选的<strong>这一类</strong>为例演示 AI 助手如何工作。其它 7 类不在本次 demo 中展示。'}</p>
         <div class="cat-grid">${tilesHtml}</div>
       </div>
       ${bottomAction(`
-        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 100px;">返回</button>
+        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 ${_backW};">返回</button>
         <button class="btn btn-primary" id="btn-next" ${current ? "" : "disabled"}>下一步 →</button>
       `)}
     `;
@@ -771,7 +773,7 @@
       </div>
 
       ${bottomAction(`
-        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 100px;">返回</button>
+        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 ${_backW};">返回</button>
         <button class="btn btn-secondary" id="btn-deny">不允许</button>
         <button class="btn btn-primary" id="btn-allow">允许</button>
       `)}
@@ -858,7 +860,7 @@
       </div>
 
       ${bottomAction(`
-        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 100px;">返回</button>
+        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 ${_backW};">返回</button>
         <button class="btn btn-primary" id="btn-confirm" ${startLevel === null ? "disabled" : ""}>
           <span id="confirm-label">${startLevel === null ? "请先选择一项" : "确认 →"}</span>
         </button>
@@ -943,7 +945,7 @@
       </div>
 
       ${bottomAction(`
-        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 100px;">返回</button>
+        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 ${_backW};">返回</button>
         <button class="btn btn-primary" id="btn-next" ${cap.first_touched ? "" : "disabled"}>确认预算 →</button>
       `)}
     `;
@@ -1038,7 +1040,7 @@
       </div>
 
       ${bottomAction(`
-        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 100px;">返回</button>
+        <button class="btn btn-secondary" id="btn-back" style="flex:0 0 ${_backW};">返回</button>
         <button class="btn btn-primary" id="btn-submit">立即开通 →</button>
       `)}
     `;

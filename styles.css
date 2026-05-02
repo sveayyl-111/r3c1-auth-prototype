@@ -135,7 +135,8 @@ html, body {
   .status-bar { height: env(safe-area-inset-top, 24px); }
 }
 
-/* Iframe mode: strip all chrome, maximize content area */
+/* Iframe mode: strip all chrome, compact layout for narrow embed */
+html.in-iframe { font-size: 13px; }
 html.in-iframe, html.in-iframe body {
   height: 100%;
   overflow: hidden;
@@ -159,14 +160,77 @@ html.in-iframe .notch { display: none; }
 html.in-iframe .phone-screen { border-radius: 0; }
 html.in-iframe .status-bar { display: none; }
 html.in-iframe .tab-bar { display: none; }
-html.in-iframe .page-content { padding: 6px 16px 20px; }
-html.in-iframe h1.page-title { font-size: 20px; }
-html.in-iframe .btn { padding: 12px 16px; font-size: 14px; }
-html.in-iframe .btn-hold { height: 44px; font-size: 14px; }
-html.in-iframe .bottom-action { padding: 10px 16px 12px; }
-html.in-iframe .bottom-action.with-back .btn-secondary { flex: 0 0 80px; }
-html.in-iframe .choice-row .btn { padding: 12px 0; font-size: 14px; }
-html.in-iframe .ambient-banner { height: 28px; font-size: 12px; padding: 0 12px; }
+
+/* Spacing */
+html.in-iframe .page-content { padding: 4px 14px 16px; }
+html.in-iframe .bottom-action { padding: 8px 14px 10px; gap: 8px; }
+html.in-iframe .bottom-action.with-back .btn-secondary { flex: 0 0 70px; }
+
+/* Typography */
+html.in-iframe h1, html.in-iframe h1.page-title { font-size: 18px; margin: 4px 0; }
+html.in-iframe .step-label { font-size: 11px; }
+html.in-iframe .page-subtitle { font-size: 12px; line-height: 1.45; }
+html.in-iframe .hero-sub { font-size: 13px; }
+
+/* Buttons */
+html.in-iframe .btn { padding: 10px 14px; font-size: 13px; border-radius: 10px; }
+html.in-iframe .btn-hold { height: 42px; font-size: 13px; }
+html.in-iframe .choice-row { gap: 8px; }
+html.in-iframe .choice-row .btn { padding: 10px 0; font-size: 13px; }
+
+/* Cards & content */
+html.in-iframe .context-frame { padding: 10px 12px; }
+html.in-iframe .cf-row { font-size: 12px; padding: 6px 0; }
+html.in-iframe .cf-key { font-size: 11px; min-width: 56px; }
+html.in-iframe .vignette-card { padding: 10px 12px; gap: 8px; }
+html.in-iframe .v-label { font-size: 11px; }
+html.in-iframe .v-title { font-size: 13px; }
+html.in-iframe .v-sub { font-size: 11px; line-height: 1.4; }
+html.in-iframe .v-icon { font-size: 28px; min-width: 36px; }
+html.in-iframe .pref-card { padding: 8px 10px; }
+html.in-iframe .pref-label { font-size: 13px; }
+html.in-iframe .pref-sub { font-size: 11px; }
+html.in-iframe .cat-tile { padding: 6px; }
+html.in-iframe .cat-name { font-size: 11px; }
+html.in-iframe .cat-price { font-size: 11px; }
+html.in-iframe .cat-img { width: 40px; height: 40px; font-size: 20px; }
+html.in-iframe .sp-label { font-size: 11px; }
+html.in-iframe .sp-card { min-width: 72px; }
+html.in-iframe .sp-name { font-size: 10px; }
+html.in-iframe .sp-price { font-size: 10px; }
+html.in-iframe .sp-img { width: 48px; height: 48px; font-size: 22px; }
+html.in-iframe .trust-row { font-size: 11px; gap: 6px; }
+
+/* Ambient banner */
+html.in-iframe .ambient-banner { height: 26px; font-size: 11px; padding: 0 10px; }
+
+/* Tier intro */
+html.in-iframe .tier-intro { padding: 12px; }
+html.in-iframe .tier-intro p { font-size: 12px; }
+html.in-iframe .tier-icon { font-size: 32px; }
+html.in-iframe .preview-list { font-size: 12px; }
+html.in-iframe .preview-list li { padding: 3px 0; }
+
+/* Hero */
+html.in-iframe .hero { padding: 16px 0 8px; }
+html.in-iframe .ai-avatar { width: 56px; height: 56px; font-size: 28px; }
+
+/* Auth items */
+html.in-iframe .auth-header { font-size: 12px; }
+html.in-iframe .auth-title { font-size: 15px; }
+html.in-iframe .auth-desc { font-size: 12px; }
+
+/* Cue banner */
+html.in-iframe .cue-banner { padding: 10px 12px; }
+html.in-iframe .cue-banner .cue-title { font-size: 13px; }
+html.in-iframe .cue-banner .cue-body { font-size: 12px; }
+
+/* End page */
+html.in-iframe .end-page { padding: 40px 16px 24px; }
+html.in-iframe .check-circle { width: 60px; height: 60px; font-size: 30px; }
+
+/* Payment cap */
+html.in-iframe .cap-display { font-size: 28px; }
 
 /* ============================== STATUS BAR ============================== */
 .status-bar {
