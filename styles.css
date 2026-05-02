@@ -135,6 +135,32 @@ html, body {
   .status-bar { height: env(safe-area-inset-top, 24px); }
 }
 
+/* Iframe mode: lock to iframe viewport, no overflow on html/body */
+html.in-iframe, html.in-iframe body {
+  height: 100%;
+  overflow: hidden;
+}
+html.in-iframe .frame-bg {
+  min-height: 100%;
+  height: 100%;
+  padding: 0;
+  background: var(--bg);
+}
+html.in-iframe .phone-frame {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+html.in-iframe .phone-frame::before { display: none; }
+html.in-iframe .notch { display: none; }
+html.in-iframe .phone-screen { border-radius: 0; }
+html.in-iframe .status-bar .time,
+html.in-iframe .status-bar .icons { display: none; }
+html.in-iframe .status-bar { height: 8px; }
+
 /* ============================== STATUS BAR ============================== */
 .status-bar {
   height: var(--status-bar-h);

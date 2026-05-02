@@ -312,6 +312,7 @@
     return_id:    urlParams.get("return_id")    || "",
     iframe_mode:  urlParams.get("mode") === "iframe" || (window.self !== window.top)
   };
+  if (ctx.iframe_mode) document.documentElement.classList.add("in-iframe");
   // Validate cell + cue fall back gracefully
   if (!VIGNETTE[ctx.cell]) ctx.cell = "self";
   if (!CUE_TEXT[ctx.cue])  ctx.cue  = "low";
