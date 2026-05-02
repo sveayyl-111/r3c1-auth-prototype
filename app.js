@@ -309,7 +309,8 @@
     jurisdiction: urlParams.get("jurisdiction") || "mainland",
     scenario:     urlParams.get("scenario")     || "A",
     return_url:   urlParams.get("return")       || FALLBACK_RETURN_URL,
-    return_id:    urlParams.get("return_id")    || ""
+    return_id:    urlParams.get("return_id")    || "",
+    iframe_mode:  urlParams.get("mode") === "iframe" || (window.self !== window.top)
   };
   // Validate cell + cue fall back gracefully
   if (!VIGNETTE[ctx.cell]) ctx.cell = "self";
@@ -1066,13 +1067,19 @@
   // ----- Page 16: End -----
   function renderEnd() {
     const code = state.submission_code || "------";
+    const msg = ctx.iframe_mode
+      ? "感谢您完成设置。请记住以下提交码，然后向下滚动继续作答。"
+      : "感谢您完成设置。系统将自动跳转回问卷页面…";
+    const note = ctx.iframe_mode
+      ? "请将此提交码填入下方问卷中。"
+      : "如果 5 秒后未自动跳转，请截图保留以上提交码并联系研究人员。";
     $app.innerHTML = `
       <div class="page-content end-page fade-in">
         <div class="check-circle" aria-hidden="true">✓</div>
         <h1>您的 AI 购物助手已开通</h1>
-        <p>感谢您完成设置。系统将自动跳转回问卷页面…</p>
+        <p>${msg}</p>
         <div class="submission-code" aria-label="提交码">${escapeHtml(code)}</div>
-        <p class="small-note">如果 5 秒后未自动跳转，请截图保留以上提交码并联系研究人员。</p>
+        <p class="small-note">${note}</p>
       </div>
     `;
   }
@@ -1187,7 +1194,11 @@
     saveState();
     render();
 
-    setTimeout(() => redirectToCredamo(payload, logSent), 1500);
+    if (ctx.iframe_mode) {
+      redirectToCredamo(payload, logSent);
+    } else {
+      setTimeout(() => redirectToCredamo(payload, logSent), 1500);
+    }
   }
 
   function buildPayload() {
@@ -1255,7 +1266,7 @@
 
   function redirectToCredamo(payload, logSent) {
     const s = payload.summary;
-    const params = new URLSearchParams({
+    const summaryData = {
       pid: state.pid,
       cell: state.cell,
       cue: state.cue,
@@ -1264,22 +1275,30 @@
       preference: state.preference || "",
       focal_category: state.focal_category || "",
       submission_code: state.submission_code,
-      breadth_sum: String(s.final_breadth_sum),
-      breadth_binary_sum: String(s.final_breadth_binary_sum),
-      payment_ladder_level: String(s.final_payment_ladder_level),
-      payment_cap: String(s.final_payment_cap),
-      total_duration_ms: String(payload.total_duration_ms),
-      total_change_count: String(s.total_change_count),
-      total_back_count: String(s.total_back_count),
-      slider_adjust_count: String(s.slider_adjust_count),
-      cue_intro_dwell_ms: String(s.cue_intro_dwell_ms),
-      cue_confirm_dwell_ms: String(s.cue_confirm_dwell_ms),
-      cue_intro_expanded: s.cue_intro_expanded ? "1" : "0",
-      cue_confirm_expanded: s.cue_confirm_expanded ? "1" : "0",
-      log_sent: logSent ? "1" : "0"
-    });
-    if (state.return_id || ctx.return_id) params.set("return_id", state.return_id || ctx.return_id);
+      breadth_sum: s.final_breadth_sum,
+      breadth_binary_sum: s.final_breadth_binary_sum,
+      payment_ladder_level: s.final_payment_ladder_level,
+      payment_cap: s.final_payment_cap,
+      total_duration_ms: payload.total_duration_ms,
+      total_change_count: s.total_change_count,
+      total_back_count: s.total_back_count,
+      slider_adjust_count: s.slider_adjust_count,
+      cue_intro_dwell_ms: s.cue_intro_dwell_ms,
+      cue_confirm_dwell_ms: s.cue_confirm_dwell_ms,
+      cue_intro_expanded: s.cue_intro_expanded ? 1 : 0,
+      cue_confirm_expanded: s.cue_confirm_expanded ? 1 : 0,
+      log_sent: logSent ? 1 : 0
+    };
 
+    if (ctx.iframe_mode) {
+      try { window.parent.postMessage({ type: "r3c1_complete", data: summaryData, payload: payload }, "*"); } catch (e) {}
+      try { localStorage.removeItem(STATE_KEY); } catch (e) {}
+      return;
+    }
+
+    const params = new URLSearchParams();
+    Object.entries(summaryData).forEach(([k, v]) => params.set(k, String(v)));
+    if (state.return_id || ctx.return_id) params.set("return_id", state.return_id || ctx.return_id);
     const sep = ctx.return_url.includes("?") ? "&" : "?";
     const finalUrl = `${ctx.return_url}${sep}${params.toString()}`;
     try { localStorage.removeItem(STATE_KEY); } catch (e) {}
