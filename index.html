@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="theme-color" content="#5050E5" />
+  <title>AI 购物助手</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- PC backdrop holds a phone-frame; on mobile the frame collapses to fullscreen -->
+  <div class="frame-bg">
+    <div class="phone-frame" role="application" aria-label="AI 购物助手原型">
+      <div class="notch"></div>
+      <div class="phone-screen">
+
+        <!-- Status bar (visual only) -->
+        <header class="status-bar" aria-hidden="true">
+          <div class="time">9:41</div>
+          <div class="icons">
+            <!-- signal -->
+            <svg viewBox="0 0 18 12" aria-hidden="true">
+              <rect x="0"  y="9"  width="3" height="3" rx="0.5"/>
+              <rect x="5"  y="6"  width="3" height="6" rx="0.5"/>
+              <rect x="10" y="3"  width="3" height="9" rx="0.5"/>
+              <rect x="15" y="0"  width="3" height="12" rx="0.5"/>
+            </svg>
+            <!-- wifi -->
+            <svg viewBox="0 0 16 12" aria-hidden="true">
+              <path d="M8 11 L9.5 9.5 L8 8 L6.5 9.5 Z"/>
+              <path d="M2.5 5 C5.5 2 10.5 2 13.5 5 L12 6.5 C9.8 4.4 6.2 4.4 4 6.5 Z"/>
+              <path d="M0 2 C4.5 -2 11.5 -2 16 2 L14.5 3.5 C10.5 -0.3 5.5 -0.3 1.5 3.5 Z"/>
+            </svg>
+            <div class="battery"><div class="level"></div></div>
+          </div>
+        </header>
+
+        <!-- Persistent ambient cell+cue banner (Round 6) -->
+        <div id="ambient-banner" class="ambient-banner" role="status" aria-live="polite"></div>
+
+        <!-- App content area (scrollable) -->
+        <main id="app" class="app-area" role="main" aria-live="polite"></main>
+
+        <!-- Bottom tab bar (decorative, not active) -->
+        <nav class="tab-bar" aria-hidden="true">
+          <div class="tab"><span class="tab-icon">🏠</span><span>首页</span></div>
+          <div class="tab active"><span class="tab-icon">✨</span><span>助手</span></div>
+          <div class="tab"><span class="tab-icon">📦</span><span>订单</span></div>
+          <div class="tab"><span class="tab-icon">👤</span><span>我的</span></div>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+
+  <noscript>
+    <p style="position:fixed;inset:0;background:#fff;padding:24px;color:#9b1c1c;text-align:center;">
+      请启用 JavaScript 以完成此问卷的授权设置。
+    </p>
+  </noscript>
+
+  <script src="app.js"></script>
+</body>
+</html>
