@@ -135,7 +135,7 @@ html, body {
   .status-bar { height: env(safe-area-inset-top, 24px); }
 }
 
-/* Iframe mode: lock to iframe viewport, no overflow on html/body */
+/* Iframe mode: strip all chrome, maximize content area */
 html.in-iframe, html.in-iframe body {
   height: 100%;
   overflow: hidden;
@@ -157,9 +157,16 @@ html.in-iframe .phone-frame {
 html.in-iframe .phone-frame::before { display: none; }
 html.in-iframe .notch { display: none; }
 html.in-iframe .phone-screen { border-radius: 0; }
-html.in-iframe .status-bar .time,
-html.in-iframe .status-bar .icons { display: none; }
-html.in-iframe .status-bar { height: 8px; }
+html.in-iframe .status-bar { display: none; }
+html.in-iframe .tab-bar { display: none; }
+html.in-iframe .page-content { padding: 6px 16px 20px; }
+html.in-iframe h1.page-title { font-size: 20px; }
+html.in-iframe .btn { padding: 12px 16px; font-size: 14px; }
+html.in-iframe .btn-hold { height: 44px; font-size: 14px; }
+html.in-iframe .bottom-action { padding: 10px 16px 12px; }
+html.in-iframe .bottom-action.with-back .btn-secondary { flex: 0 0 80px; }
+html.in-iframe .choice-row .btn { padding: 12px 0; font-size: 14px; }
+html.in-iframe .ambient-banner { height: 28px; font-size: 12px; padding: 0 12px; }
 
 /* ============================== STATUS BAR ============================== */
 .status-bar {
