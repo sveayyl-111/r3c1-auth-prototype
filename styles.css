@@ -161,9 +161,24 @@ html.in-iframe .phone-screen { border-radius: 0; }
 html.in-iframe .status-bar { display: none; }
 html.in-iframe .tab-bar { display: none; }
 
-/* Spacing */
-html.in-iframe .page-content { padding: 4px 14px 16px; }
-html.in-iframe .bottom-action { padding: 8px 14px 10px; gap: 8px; }
+/* Layout: pin bottom-action, scroll only page-content */
+html.in-iframe .app-area {
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+}
+html.in-iframe .page-content {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+  padding: 4px 14px 16px;
+}
+html.in-iframe .bottom-action {
+  flex-shrink: 0;
+  padding: 8px 14px 10px;
+  gap: 8px;
+}
 html.in-iframe .bottom-action.with-back .btn-secondary { flex: 0 0 70px; }
 
 /* Typography */
