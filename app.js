@@ -23,7 +23,7 @@
   const TOOL_VERSION = "v5.0_2026-04-28";
 
   // OPTIONAL serverless logging endpoint (null = self-contained mode).
-  const LOGGING_ENDPOINT = "https://script.google.com/macros/s/AKfycbwi-5wxJqzuGhWZmIsiMoVOnUQu3H6AVvVrziKj9uMeqrfmQvac7HBehoCSgDmFdxdC/exec";
+  const LOGGING_ENDPOINT = "https://script.google.com/macros/s/AKfycbyr82xSoD6pOgKic2Hk2kTgbkLjG3jFGE_p2V0Az-MiGhKOez10pTSVh-RDTv2kQjOq/exec";
 
   // Credamo "return" URL fallback (best practice: pass via ?return=...)
   const FALLBACK_RETURN_URL = "https://www.credamo.com/";
@@ -1183,14 +1183,14 @@
     let logSent = false;
     if (LOGGING_ENDPOINT) {
       try {
-        const r = await fetch(LOGGING_ENDPOINT, {
+        await fetch(LOGGING_ENDPOINT, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "text/plain" },
           body: JSON.stringify(payload),
-          mode: "cors",
+          mode: "no-cors",
           keepalive: true
         });
-        logSent = r.ok;
+        logSent = true;
       } catch (e) { /* fall back to URL params */ }
     }
 
