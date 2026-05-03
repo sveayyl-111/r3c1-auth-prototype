@@ -118,9 +118,9 @@
       ],
       hold: false,
       ladder: [
-        { level: 0, label: "每次都让我确认",      sub: "即使 ¥10 的订单也要先问我" },
-        { level: 1, label: "单笔 ≤ ¥30 才自动付款", sub: "超过 ¥30 的订单仍需我确认" },
-        { level: 2, label: "单笔 ≤ ¥100 才自动付款", sub: "超过 ¥100 的订单仍需我确认" },
+        { level: 0, label: "每次都让我确认",       sub: "即使 ¥10 的订单也要先问我" },
+        { level: 1, label: "单笔 ≤ ¥100 才自动付款", sub: "超过 ¥100 的订单仍需我确认" },
+        { level: 2, label: "单笔 ≤ ¥500 才自动付款", sub: "超过 ¥500 的订单仍需我确认" },
         { level: 3, label: "任意金额都可自动付款",  sub: "在我设的总额度内 AI 全权决定" }
       ]
     },
@@ -932,9 +932,9 @@
         </div>
 
         <div class="cap-slider-wrap">
-          <input id="cap-slider" class="cap-slider" type="range" min="0" max="1500" step="50" value="${currentValue}" />
+          <input id="cap-slider" class="cap-slider" type="range" min="0" max="5000" step="100" value="${currentValue}" />
           <div class="cap-ticks">
-            <span>¥0</span><span>¥300</span><span>¥600</span><span>¥900</span><span>¥1200</span><span>¥1500</span>
+            <span>¥0</span><span>¥1000</span><span>¥2000</span><span>¥3000</span><span>¥4000</span><span>¥5000</span>
           </div>
         </div>
 
@@ -1451,14 +1451,16 @@
     ];
     const sales  = [52000, 38000, 41000, 18000, 27000];
     const rating = [4.8, 4.6, 4.7, 4.4, 4.5];
-    const rows = ext.map((p, i) => `
+    const rows = ext.map((p, i) => {
+      const displayName = _s ? p.name.replace(/^.+?(品牌)/, '$1') : p.name;
+      return `
       <tr>
-        <td class="bc-name"><span class="bc-icon" style="background: ${p.bg};">${p.icon}</span>${escapeHtml(p.name)}</td>
+        <td class="bc-name"><span class="bc-icon" style="background: ${p.bg};">${p.icon}</span>${escapeHtml(displayName)}</td>
         <td class="bc-price"><span class="now">¥${p.price}</span><span class="orig">¥${p.orig}</span></td>
         <td class="bc-sales">${sales[i].toLocaleString()}</td>
         <td class="bc-rating">★ ${rating[i]}</td>
       </tr>
-    `).join("");
+    `;}).join("");
     return `
       <table class="brand-compare">
         <thead>

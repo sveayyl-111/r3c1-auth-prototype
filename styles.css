@@ -230,6 +230,15 @@ html.in-iframe .preview-list li { padding: 3px 0; }
 html.in-iframe .hero { padding: 16px 0 8px; }
 html.in-iframe .ai-avatar { width: 56px; height: 56px; font-size: 28px; }
 
+/* Brand compare table */
+html.in-iframe .brand-compare { font-size: 11px; margin-top: 8px; }
+html.in-iframe .brand-compare th { padding: 6px 4px; font-size: 11px; }
+html.in-iframe .brand-compare td { padding: 6px 4px; }
+html.in-iframe .brand-compare .bc-name { gap: 4px; font-size: 11px; white-space: nowrap; }
+html.in-iframe .brand-compare .bc-icon { width: 22px; height: 22px; font-size: 13px; }
+html.in-iframe .brand-compare .bc-price .now { font-size: 11px; }
+html.in-iframe .brand-compare .bc-price .orig { font-size: 10px; }
+
 /* Auth items */
 html.in-iframe .auth-header { font-size: 12px; }
 html.in-iframe .auth-title { font-size: 15px; }
