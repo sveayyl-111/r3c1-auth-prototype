@@ -1,7 +1,7 @@
-/* R3C1 Authorization Prototype v5 — Qwen-style mobile shopping app
+/* R3C1 Authorization Prototype v5 — mobile shopping app
    Spec source: instruments/figma_prototype_spec.md (Round 10)
    Decisions locked (2026-04-28):
-     1. Qwen-style aesthetic (indigo gradient, ✨ AI mark)
+     1. Indigo gradient aesthetic, ✨ AI mark
      2. PC center renders 414x896 phone frame
      3. Generic "AI 购物助手" name (no fake brand)
      4. **Welcome split into 3 pages (v5)**: A=what is this / B=who you're buying for / C=preview+cue+start
@@ -297,7 +297,7 @@
     { icon: "★",  text: "4.8 (1.2M 评分)" },
     { icon: "🛡️", text: "国家支付清算认证" },
     { icon: "🔒", text: "端到端加密" },
-    { icon: "✨", text: "Qwen Pro 引擎" }
+    { icon: "✨", text: "AI 智能引擎" }
   ];
 
   // ============================== URL PARAMS ==============================
@@ -767,7 +767,7 @@
 
         <div class="auth-trust">
           <span class="pellet">🔒 加密传输</span>
-          <span class="pellet">✨ Qwen Pro</span>
+          <span class="pellet">✨ AI 助手</span>
           <span class="pellet">📋 可随时关闭</span>
         </div>
       </div>
@@ -854,7 +854,7 @@
 
         <div class="auth-trust">
           <span class="pellet">🔒 加密传输</span>
-          <span class="pellet">✨ Qwen Pro</span>
+          <span class="pellet">✨ AI 助手</span>
           <span class="pellet">📋 可随时关闭</span>
         </div>
       </div>
@@ -1308,7 +1308,7 @@
     window.location.href = finalUrl;
   }
 
-  // ============================== UI HELPERS (Qwen-style components) ==============================
+  // ============================== UI HELPERS ==============================
 
   function aiBubble(text, reason) {
     return `
@@ -1504,7 +1504,7 @@
     `;
   }
 
-  /** Per-auth-item content (Qwen-style chat bubble + product preview, cell-adaptive, focal-category locked). */
+  /** Per-auth-item content (chat bubble + product preview, cell-adaptive, focal-category locked). */
   function authItemContent(itemId) {
     const cell = ctx.cell;
     const focalId = state.focal_category || "milk";  // fallback if user skipped pick (shouldn't happen)

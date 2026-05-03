@@ -1,6 +1,6 @@
-/* R3C1 Authorization Prototype v2 — Qwen-style mobile shopping assistant
-   Design language: 通义千问 / Qwen aesthetic
-   - Indigo-purple gradients (Qwen brand vibe)
+/* R3C1 Authorization Prototype v2 — mobile shopping assistant
+   Design language: generic AI assistant aesthetic
+   - Indigo-purple gradients
    - PingFang SC / Source Han Sans
    - Generous whitespace, 12-16px rounded corners
    - ✨ sparkle as AI mark
@@ -9,7 +9,7 @@
 
 /* ============================== TOKENS ============================== */
 :root {
-  /* Qwen palette */
+  /* Primary palette */
   --qwen-primary: #5050E5;
   --qwen-primary-down: #4242C7;
   --qwen-light: #8B8FF7;
@@ -1123,7 +1123,7 @@ h1.page-title {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ============================== AI CHAT BUBBLE (Qwen-style) ============================== */
+/* ============================== AI CHAT BUBBLE ============================== */
 .ai-bubble {
   display: flex;
   gap: 10px;
