@@ -10,10 +10,10 @@
      7. 3-tier auth flow (browse / order / long-term mgmt) with tier intro pages
      8. **All 8 auth item titles in question form (v5)**: "是否允许 AI 助手 [X]?" instead of declarative
      9. Recourse cue exposure: welcome-C anchor → persistent ambient banner → confirm anchor
-     10. auth_6_pay = 4-level payment-authorization ladder (ordinal 0-3)
+     10. auth_6_pay = 5-level payment-authorization ladder (ordinal 0-4)
      11. **Monthly cap = ALL-CATEGORY total (v5)**: explicitly framed as cross-category cumulative budget, NOT focal-category-only — avoids cap value being anchored to focal product unit price
      12. Anti-cheat = 3 mechanisms: phone frame + cue triple exposure + back-to-modify count
-   Primary DV: final_breadth_sum (0–10 composite) = 7 binary + ladder_level (0-3)
+   Primary DV: final_breadth_sum (0–11 composite) = 7 binary + ladder_level (0-4)
 */
 
 (() => {
@@ -48,8 +48,8 @@
   // ============================== AUTH ITEMS ==============================
   // type:
   //   "binary"  → allow / deny radio buttons (records auth_choices[id].final_choice)
-  //   "ladder"  → 4-level ordinal payment-authorization ladder (records auth_choices[id].ladder_level 0-3)
-  // hold: hold-to-confirm 2s gate on the most permissive choice (allow for binary, level-3 for ladder)
+  //   "ladder"  → 5-level ordinal payment-authorization ladder (records auth_choices[id].ladder_level 0-4)
+  // hold: hold-to-confirm 2s gate on the most permissive choice (allow for binary, level-4 for ladder)
   const AUTH_ITEMS = [
     // Tier 1: 浏览与比较 (browse) — low friction
     { id: "auth_1_search",     tier: "search",         tierGroup: 1, icon: "🔍",
@@ -118,10 +118,11 @@
       ],
       hold: false,
       ladder: [
-        { level: 0, label: "每次都让我确认",       sub: "即使 ¥10 的订单也要先问我" },
-        { level: 1, label: "单笔 ≤ ¥100 才自动付款", sub: "超过 ¥100 的订单仍需我确认" },
-        { level: 2, label: "单笔 ≤ ¥500 才自动付款", sub: "超过 ¥500 的订单仍需我确认" },
-        { level: 3, label: "任意金额都可自动付款",  sub: "在我设的总额度内 AI 全权决定" }
+        { level: 0, label: "每次都让我确认",        sub: "即使 ¥10 的订单也要先问我" },
+        { level: 1, label: "单笔 ≤ ¥100 才自动付款",  sub: "超过 ¥100 的订单仍需我确认" },
+        { level: 2, label: "单笔 ≤ ¥500 才自动付款",  sub: "超过 ¥500 的订单仍需我确认" },
+        { level: 3, label: "单笔 ≤ ¥1000 才自动付款", sub: "超过 ¥1000 的订单仍需我确认" },
+        { level: 4, label: "任意金额都可自动付款",   sub: "在我设的总额度内 AI 全权决定" }
       ]
     },
 
@@ -390,7 +391,7 @@
   // 9:  tier 2 intro
   // 10: auth_4_select
   // 11: auth_5_order
-  // 12: auth_6_pay (4-level ladder)
+  // 12: auth_6_pay (5-level ladder)
   // 13: tier 3 intro
   // 14: auth_7_substitute
   // 15: auth_8_replenish
