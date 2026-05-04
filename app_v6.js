@@ -1200,36 +1200,30 @@
       if (LOGGING_ENDPOINT) {
         const payloadStr = JSON.stringify(payload);
 
-        // Method 1: fetch with CORS (Worker returns proper CORS headers)
+        // Primary: await fetch with keepalive so browser won't cancel on redirect
         try {
-          fetch(LOGGING_ENDPOINT, {
+          const resp = await fetch(LOGGING_ENDPOINT, {
             method: "POST",
             mode: "cors",
-            headers: { "Content-Type": "application/json" },
+            keepalive: true,
+            headers: { "Content-Type": "text/plain;charset=UTF-8" },
             body: payloadStr
-          }).catch(() => {});
-          logSent = true;
+          });
+          if (resp.ok) logSent = true;
         } catch (e) {}
 
-        // Method 2: sendBeacon with form-encoded data (no CORS preflight needed)
+        // Backup: sendBeacon (survives page unload by design)
         try {
           navigator.sendBeacon(LOGGING_ENDPOINT, new URLSearchParams({ payload: payloadStr }));
         } catch (e) {}
-
-        // Method 3: Image pixel GET fallback (works even under strict CSP)
-        try {
-          const img = new Image();
-          img.src = LOGGING_ENDPOINT + "?pixel=1&payload=" + encodeURIComponent(payloadStr);
-        } catch (e) {}
       }
 
-      state.current_page_index = 18;  // end page (v5: shifted +2 due to 3 welcome pages)
+      state.current_page_index = 18;
       saveState();
       render();
 
-      // Delay redirect to give network requests time to fire
-      const redirectDelay = ctx.iframe_mode ? 1500 : 1500;
-      setTimeout(() => redirectToCredamo(payload, logSent), redirectDelay);
+      // Redirect after data is already sent
+      setTimeout(() => redirectToCredamo(payload, logSent), 800);
     } catch (err) {
       document.title = "ERR:" + err.message;
       alert("Submit error: " + err.message + "\n\nStack: " + err.stack);
