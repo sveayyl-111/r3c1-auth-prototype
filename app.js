@@ -23,7 +23,7 @@
   const TOOL_VERSION = "v5.0_2026-04-28";
 
   // OPTIONAL serverless logging endpoint (null = self-contained mode).
-  const LOGGING_ENDPOINT = "https://script.google.com/macros/s/AKfycbyr82xSoD6pOgKic2Hk2kTgbkLjG3jFGE_p2V0Az-MiGhKOez10pTSVh-RDTv2kQjOq/exec";
+  const LOGGING_ENDPOINT = "https://script.google.com/macros/s/AKfycbzIfEUAVp_BZCCA7O0p1AF5gbgB9lfio6iCklS_TmF5lmmzPKC_bJmiv9a5-iKt3JRj/exec";
 
   // Credamo "return" URL fallback (best practice: pass via ?return=...)
   const FALLBACK_RETURN_URL = "https://www.credamo.com/";
