@@ -1182,16 +1182,13 @@
 
     let logSent = false;
     if (LOGGING_ENDPOINT) {
+      const body = JSON.stringify(payload);
       try {
-        await fetch(LOGGING_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify(payload),
-          mode: "no-cors",
-          keepalive: true
-        });
-        logSent = true;
-      } catch (e) { /* fall back to URL params */ }
+        logSent = navigator.sendBeacon(LOGGING_ENDPOINT, new Blob([body], { type: "text/plain" }));
+      } catch (e) {}
+      if (!logSent) {
+        try { fetch(LOGGING_ENDPOINT, { method: "POST", body: body, mode: "no-cors", keepalive: true }); logSent = true; } catch (e2) {}
+      }
     }
 
     state.current_page_index = 18;  // end page (v5: shifted +2 due to 3 welcome pages)
