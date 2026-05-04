@@ -23,7 +23,7 @@
   const TOOL_VERSION = "v5.0_2026-04-28";
 
   // OPTIONAL serverless logging endpoint (null = self-contained mode).
-  const LOGGING_ENDPOINT = "https://script.google.com/macros/s/AKfycbzIfEUAVp_BZCCA7O0p1AF5gbgB9lfio6iCklS_TmF5lmmzPKC_bJmiv9a5-iKt3JRj/exec";
+  const LOGGING_ENDPOINT = "https://r3c1-data-relay.svea-yyl.workers.dev";
 
   // Credamo "return" URL fallback (best practice: pass via ?return=...)
   const FALLBACK_RETURN_URL = "https://www.credamo.com/";
@@ -318,6 +318,18 @@
   // Validate cell + cue fall back gracefully
   if (!VIGNETTE[ctx.cell]) ctx.cell = "self";
   if (!CUE_TEXT[ctx.cue])  ctx.cue  = "low";
+
+  // ============================== LOCAL BACKUP ==============================
+  const BACKUP_KEY = "r3c1_all_submissions_backup";
+
+  function backupPayload(payload) {
+    try {
+      const raw = localStorage.getItem(BACKUP_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      arr.push({ saved_at: new Date().toISOString(), payload: payload });
+      localStorage.setItem(BACKUP_KEY, JSON.stringify(arr));
+    } catch (e) {}
+  }
 
   // ============================== STATE ==============================
   const STATE_KEY = `r3c1_state_v5_${ctx.pid}`;
@@ -1180,8 +1192,14 @@
 
     const payload = buildPayload();
 
+    // LOCAL BACKUP — always save before any network attempt
+    backupPayload(payload);
+
     let logSent = false;
     if (LOGGING_ENDPOINT) {
+      const payloadStr = JSON.stringify(payload);
+
+      // Method 1: hidden form POST to hidden iframe (CORS-free)
       try {
         const frameName = "log_" + Date.now();
         const frame = document.createElement("iframe");
@@ -1195,12 +1213,28 @@
         form.style.display = "none";
         const input = document.createElement("textarea");
         input.name = "payload";
-        input.value = JSON.stringify(payload);
+        input.value = payloadStr;
         form.appendChild(input);
         document.body.appendChild(form);
         form.submit();
         logSent = true;
         setTimeout(() => { form.remove(); frame.remove(); }, 15000);
+      } catch (e) {}
+
+      // Method 2: sendBeacon (fire-and-forget, works on page unload)
+      try {
+        const blob = new Blob([payloadStr], { type: "application/json" });
+        navigator.sendBeacon(LOGGING_ENDPOINT, blob);
+      } catch (e) {}
+
+      // Method 3: fetch no-cors (may not deliver but costs nothing to try)
+      try {
+        fetch(LOGGING_ENDPOINT, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: payloadStr
+        }).catch(() => {});
       } catch (e) {}
     }
 
