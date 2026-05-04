@@ -1178,57 +1178,62 @@
 
   // ============================== SUBMIT ==============================
   async function handleSubmit() {
-    const $submit = document.getElementById("btn-submit");
-    if ($submit) {
-      $submit.disabled = true;
-      $submit.textContent = "提交中…";
+    try {
+      const $submit = document.getElementById("btn-submit");
+      if ($submit) {
+        $submit.disabled = true;
+        $submit.textContent = "提交中…";
+      }
+      exitPage(state.current_page_index);
+
+      state.end_ts = Date.now();
+      state.submitted = true;
+      state.submission_code = generateCode();
+      saveState();
+
+      const payload = buildPayload();
+
+      // LOCAL BACKUP — always save before any network attempt
+      backupPayload(payload);
+
+      let logSent = false;
+      if (LOGGING_ENDPOINT) {
+        const payloadStr = JSON.stringify(payload);
+
+        // Method 1: fetch with CORS (Worker returns proper CORS headers)
+        try {
+          fetch(LOGGING_ENDPOINT, {
+            method: "POST",
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
+            body: payloadStr
+          }).catch(() => {});
+          logSent = true;
+        } catch (e) {}
+
+        // Method 2: sendBeacon with form-encoded data (no CORS preflight needed)
+        try {
+          navigator.sendBeacon(LOGGING_ENDPOINT, new URLSearchParams({ payload: payloadStr }));
+        } catch (e) {}
+
+        // Method 3: Image pixel GET fallback (works even under strict CSP)
+        try {
+          const img = new Image();
+          img.src = LOGGING_ENDPOINT + "?pixel=1&payload=" + encodeURIComponent(payloadStr);
+        } catch (e) {}
+      }
+
+      state.current_page_index = 18;  // end page (v5: shifted +2 due to 3 welcome pages)
+      saveState();
+      render();
+
+      // Delay redirect to give network requests time to fire
+      const redirectDelay = ctx.iframe_mode ? 1500 : 1500;
+      setTimeout(() => redirectToCredamo(payload, logSent), redirectDelay);
+    } catch (err) {
+      document.title = "ERR:" + err.message;
+      alert("Submit error: " + err.message + "\n\nStack: " + err.stack);
     }
-    exitPage(state.current_page_index);
-
-    state.end_ts = Date.now();
-    state.submitted = true;
-    state.submission_code = generateCode();
-    saveState();
-
-    const payload = buildPayload();
-
-    // LOCAL BACKUP — always save before any network attempt
-    backupPayload(payload);
-
-    let logSent = false;
-    if (LOGGING_ENDPOINT) {
-      const payloadStr = JSON.stringify(payload);
-
-      // Method 1: fetch with CORS (Worker returns proper CORS headers)
-      try {
-        fetch(LOGGING_ENDPOINT, {
-          method: "POST",
-          mode: "cors",
-          headers: { "Content-Type": "application/json" },
-          body: payloadStr
-        }).catch(() => {});
-        logSent = true;
-      } catch (e) {}
-
-      // Method 2: sendBeacon with form-encoded data (no CORS preflight needed)
-      try {
-        navigator.sendBeacon(LOGGING_ENDPOINT, new URLSearchParams({ payload: payloadStr }));
-      } catch (e) {}
-
-      // Method 3: Image pixel GET fallback (works even under strict CSP)
-      try {
-        const img = new Image();
-        img.src = LOGGING_ENDPOINT + "?pixel=1&payload=" + encodeURIComponent(payloadStr);
-      } catch (e) {}
-    }
-
-    state.current_page_index = 18;  // end page (v5: shifted +2 due to 3 welcome pages)
-    saveState();
-    render();
-
-    // Delay redirect to give network requests time to fire
-    const redirectDelay = ctx.iframe_mode ? 1500 : 1500;
-    setTimeout(() => redirectToCredamo(payload, logSent), redirectDelay);
   }
 
   function buildPayload() {
