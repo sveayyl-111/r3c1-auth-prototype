@@ -1182,13 +1182,26 @@
 
     let logSent = false;
     if (LOGGING_ENDPOINT) {
-      const body = JSON.stringify(payload);
       try {
-        logSent = navigator.sendBeacon(LOGGING_ENDPOINT, new Blob([body], { type: "text/plain" }));
+        const frameName = "log_" + Date.now();
+        const frame = document.createElement("iframe");
+        frame.name = frameName;
+        frame.style.display = "none";
+        document.body.appendChild(frame);
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = LOGGING_ENDPOINT;
+        form.target = frameName;
+        form.style.display = "none";
+        const input = document.createElement("textarea");
+        input.name = "payload";
+        input.value = JSON.stringify(payload);
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+        logSent = true;
+        setTimeout(() => { form.remove(); frame.remove(); }, 15000);
       } catch (e) {}
-      if (!logSent) {
-        try { fetch(LOGGING_ENDPOINT, { method: "POST", body: body, mode: "no-cors", keepalive: true }); logSent = true; } catch (e2) {}
-      }
     }
 
     state.current_page_index = 18;  // end page (v5: shifted +2 due to 3 welcome pages)
