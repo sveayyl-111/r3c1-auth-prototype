@@ -1199,42 +1199,26 @@
     if (LOGGING_ENDPOINT) {
       const payloadStr = JSON.stringify(payload);
 
-      // Method 1: hidden form POST to hidden iframe (CORS-free)
-      try {
-        const frameName = "log_" + Date.now();
-        const frame = document.createElement("iframe");
-        frame.name = frameName;
-        frame.style.display = "none";
-        document.body.appendChild(frame);
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = LOGGING_ENDPOINT;
-        form.target = frameName;
-        form.style.display = "none";
-        const input = document.createElement("textarea");
-        input.name = "payload";
-        input.value = payloadStr;
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-        logSent = true;
-        setTimeout(() => { form.remove(); frame.remove(); }, 15000);
-      } catch (e) {}
-
-      // Method 2: sendBeacon (fire-and-forget, works on page unload)
-      try {
-        const blob = new Blob([payloadStr], { type: "application/json" });
-        navigator.sendBeacon(LOGGING_ENDPOINT, blob);
-      } catch (e) {}
-
-      // Method 3: fetch no-cors (may not deliver but costs nothing to try)
+      // Method 1: fetch with CORS (Worker returns proper CORS headers)
       try {
         fetch(LOGGING_ENDPOINT, {
           method: "POST",
-          mode: "no-cors",
+          mode: "cors",
           headers: { "Content-Type": "application/json" },
           body: payloadStr
         }).catch(() => {});
+        logSent = true;
+      } catch (e) {}
+
+      // Method 2: sendBeacon with form-encoded data (no CORS preflight needed)
+      try {
+        navigator.sendBeacon(LOGGING_ENDPOINT, new URLSearchParams({ payload: payloadStr }));
+      } catch (e) {}
+
+      // Method 3: Image pixel GET fallback (works even under strict CSP)
+      try {
+        const img = new Image();
+        img.src = LOGGING_ENDPOINT + "?pixel=1&payload=" + encodeURIComponent(payloadStr);
       } catch (e) {}
     }
 
@@ -1242,11 +1226,9 @@
     saveState();
     render();
 
-    if (ctx.iframe_mode) {
-      redirectToCredamo(payload, logSent);
-    } else {
-      setTimeout(() => redirectToCredamo(payload, logSent), 1500);
-    }
+    // Delay redirect to give network requests time to fire
+    const redirectDelay = ctx.iframe_mode ? 1500 : 1500;
+    setTimeout(() => redirectToCredamo(payload, logSent), redirectDelay);
   }
 
   function buildPayload() {
