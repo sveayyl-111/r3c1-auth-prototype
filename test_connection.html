@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Connection Test</title></head>
+<body style="font-family:monospace;padding:20px;font-size:16px;">
+<h2>Worker Connection Test</h2>
+<div id="results">Testing...</div>
+<script>
+var r = document.getElementById("results");
+var url = "https://r3c1-data-relay.svea-yyl.workers.dev";
+var html = "";
+
+// Test 1: fetch cors
+fetch(url, {
+  method: "POST",
+  mode: "cors",
+  headers: {"Content-Type": "application/json"},
+  body: JSON.stringify({participant_id: "page_test_fetch", test: true})
+}).then(function(resp) { return resp.text(); })
+.then(function(t) { html += "<p style='color:green'>fetch cors: OK - " + t + "</p>"; r.innerHTML = html; })
+.catch(function(e) { html += "<p style='color:red'>fetch cors: FAIL - " + e.message + "</p>"; r.innerHTML = html; });
+
+// Test 2: sendBeacon
+try {
+  var params = new URLSearchParams();
+  params.set("payload", JSON.stringify({participant_id: "page_test_beacon", test: true}));
+  var ok = navigator.sendBeacon(url, params);
+  html += "<p style='color:" + (ok ? "green" : "red") + "'>sendBeacon: " + (ok ? "queued" : "FAIL") + "</p>";
+  r.innerHTML = html;
+} catch(e) {
+  html += "<p style='color:red'>sendBeacon: FAIL - " + e.message + "</p>";
+  r.innerHTML = html;
+}
+
+// Test 3: Image pixel
+var img = new Image();
+img.onload = function() { html += "<p style='color:green'>Image pixel: OK</p>"; r.innerHTML = html; };
+img.onerror = function() { html += "<p style='color:red'>Image pixel: FAIL</p>"; r.innerHTML = html; };
+img.src = url + "?pixel=1&payload=" + encodeURIComponent(JSON.stringify({participant_id: "page_test_pixel", test: true}));
+</script>
+</body>
+</html>
