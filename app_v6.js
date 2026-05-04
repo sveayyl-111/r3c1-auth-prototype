@@ -23,7 +23,7 @@
   const TOOL_VERSION = "v5.0_2026-04-28";
 
   // OPTIONAL serverless logging endpoint (null = self-contained mode).
-  const LOGGING_ENDPOINT = "https://r3c1-data-relay.svea-yyl.workers.dev";
+  const LOGGING_ENDPOINT = "https://1305575097-6zxghulygt.ap-guangzhou.tencentscf.com";
 
   // Credamo "return" URL fallback (best practice: pass via ?return=...)
   const FALLBACK_RETURN_URL = "https://www.credamo.com/";
